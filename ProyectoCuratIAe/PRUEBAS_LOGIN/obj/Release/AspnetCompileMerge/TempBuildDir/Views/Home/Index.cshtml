@@ -1,0 +1,255 @@
+﻿@{
+    ViewBag.Title = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="https://fonts.cdnfonts.com/css/legendum" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Legendum', sans-serif;
+            background: #f4f6f9;
+            color: #2c3e50;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 75vh; /* Antes estaba en 60vh, ahora más alto */
+            overflow: hidden;
+            background: radial-gradient(circle, #6dd5c1, #ffd300, #2c3e50);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            background: transparent;
+        }
+
+        .carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Rellena el carrusel */
+            object-position: center; /* Centra la imagen */
+            display: none;
+        }
+
+        @@keyframes fade {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+
+        .carousel img.active {
+            display: block;
+            animation: fade 1s ease-in-out;
+        }
+
+        .carousel .text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+        }
+
+        .carousel .text-overlay h2 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .carousel .text-overlay p {
+            font-size: 1.2rem;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: white;
+            background: rgba(0,0,0,0.4);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: #6dd5c1;
+        }
+
+        .prev { left: 20px; }
+        .next { right: 20px; }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .carousel-indicators div {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .carousel-indicators div.active {
+            opacity: 1;
+            background: #6dd5c1;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            color: #2c3e50;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+            background: #6dd5c1;
+            color: white;
+        }
+
+        .icon i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .consulta i { color: #2c3e50; }
+        .emergencia i { color: #E53935; }
+        .diagnostico i { color: #ffd300; }
+        .info i { color: #2c3e50; }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-top: 10px;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+}
+
+<main>
+    <section class="hero">
+        <div class="carousel">
+            <img src="~/Content/Images/Medicodigital.jpg" class="active" alt="Salud digital">
+            <img src="~/Content/Images/FamiliaSalud.jpg" alt="Familia saludable">
+            <img src="~/Content/Images/usuarios.jpg" alt="Consulta medica">
+            <img src="~/Content/Images/prevencion.jpg" alt="Prevencion salud">
+
+            <div class="text-overlay">
+                <h2>Tu salud en un solo lugar</h2>
+                <p>Consultas, emergencias y diagnósticos asistidos por IA</p>
+            </div>
+
+            <button class="carousel-btn prev">&#10094;</button>
+            <button class="carousel-btn next">&#10095;</button>
+            <div class="carousel-indicators"></div>
+        </div>
+    </section>
+
+    <section class="grid">
+        <a href="@Url.Action("Consulta", "Home")" class="card">
+            <div class="icon consulta"><i class="fas fa-stethoscope"></i></div>
+            <h3>Consulta con IA</h3>
+        </a>
+        <a href="@Url.Action("Emergencia", "Home")" class="card">
+            <div class="icon emergencia"><i class="fas fa-ambulance"></i></div>
+            <h3>Emergencias</h3>
+        </a>
+        <a href="@Url.Action("Historial", "Home")" class="card">
+            <div class="icon diagnostico"><i class="fas fa-notes-medical"></i></div>
+            <h3>Historial Médico</h3>
+        </a>
+        <a href="@Url.Action("Informacion", "Home")" class="card">
+            <div class="icon info"><i class="fas fa-info-circle"></i></div>
+            <h3>Más Información</h3>
+        </a>
+    </section>
+</main>
+
+@section scripts {
+    <script>
+        const images = document.querySelectorAll('.carousel img');
+        const indicatorsContainer = document.querySelector('.carousel-indicators');
+        let index = 0;
+
+        images.forEach((_, i) => {
+            const dot = document.createElement('div');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => {
+                index = i;
+                showImage(index);
+            });
+            indicatorsContainer.appendChild(dot);
+        });
+
+        function updateIndicators() {
+            const dots = document.querySelectorAll('.carousel-indicators div');
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+        }
+
+        function showImage(i) {
+            images.forEach((img, idx) => {
+                img.classList.remove('active');
+                if (idx === i) img.classList.add('active');
+            });
+            updateIndicators();
+        }
+
+        document.querySelector('.next').addEventListener('click', () => {
+            index = (index + 1) % images.length;
+            showImage(index);
+        });
+
+        document.querySelector('.prev').addEventListener('click', () => {
+            index = (index - 1 + images.length) % images.length;
+            showImage(index);
+        });
+
+        setInterval(() => {
+            index = (index + 1) % images.length;
+            showImage(index);
+        }, 5000);
+
+        showImage(index);
+    </script>
+}

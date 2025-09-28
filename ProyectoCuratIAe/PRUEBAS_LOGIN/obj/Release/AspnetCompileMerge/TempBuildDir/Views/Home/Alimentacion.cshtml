@@ -1,0 +1,1048 @@
+﻿@{
+    ViewBag.Title = "Guías de Alimentación MINSA Nicaragua";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="https://fonts.cdnfonts.com/css/legendum" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primario: #6dd5c1;
+            --secundario: #FFD300;
+            --terciario: #E53935;
+            --texto: #2c3e50;
+            --fondo: #f8fafc;
+            --borde: #e0e6ed;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --info: #2196F3;
+        }
+
+        /* Ajuste del main para el header fijo */
+        main {
+            padding-top: 120px;
+        }
+
+        /* Hero Section Profesional */
+        .nutrition-hero {
+            background: linear-gradient(135deg, var(--primario) 0%, var(--texto) 100%);
+            color: #ffffff;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .nutrition-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Panel de Control Avanzado */
+        .control-panel {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--borde);
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .panel-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 0.5rem;
+        }
+
+        .panel-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .age-navigation {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .age-btn {
+            background: #ffffff;
+            border: 2px solid var(--borde);
+            padding: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+            .age-btn.active {
+                background: linear-gradient(135deg, var(--primario) 0%, #5bc4b0 100%);
+                color: #ffffff;
+                border-color: var(--primario);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(109, 213, 193, 0.3);
+            }
+
+            .age-btn i {
+                font-size: 2.5rem;
+                opacity: 0.9;
+            }
+
+        .age-info {
+            text-align: center;
+        }
+
+        .age-range {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .age-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Contenido de Grupos de Edad */
+        .age-content {
+            display: none;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .age-content.active {
+            display: block;
+        }
+
+        /* Dashboard Nutricional */
+        .nutrition-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .nutrition-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid var(--borde);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--texto) 0%, #1a2530 100%);
+            color: #ffffff;
+            padding: 2.5rem;
+            position: relative;
+        }
+
+        .age-badge {
+            background: var(--secundario);
+            color: var(--texto);
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .card-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .card-content {
+            padding: 2.5rem;
+        }
+
+        /* Grid de Información */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-section {
+            background: var(--fondo);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid var(--primario);
+            transition: transform 0.3s ease;
+        }
+
+            .info-section:hover {
+                transform: translateX(5px);
+            }
+
+            .info-section h3 {
+                color: var(--primario);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.8rem;
+                font-size: 1.3rem;
+            }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+            .info-list li {
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--borde);
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                transition: color 0.3s ease;
+            }
+
+                .info-list li:hover {
+                    color: var(--primario);
+                }
+
+                .info-list li:last-child {
+                    border-bottom: none;
+                }
+
+                .info-list li i {
+                    color: var(--success);
+                    width: 20px;
+                    font-size: 1.1rem;
+                }
+
+        /* Gráficos */
+        .chart-container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--texto);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Recomendaciones */
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+            .recommendation-card:hover {
+                border-color: var(--primario);
+                transform: translateY(-3px);
+            }
+
+            .recommendation-card.warning {
+                border-left: 4px solid var(--warning);
+            }
+
+            .recommendation-card.success {
+                border-left: 4px solid var(--success);
+            }
+
+            .recommendation-card.info {
+                border-left: 4px solid var(--info);
+            }
+
+        /* Tablas de Información */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+            .info-table th {
+                background: var(--primario);
+                color: var(--texto);
+                padding: 1rem;
+                text-align: left;
+                font-weight: 600;
+            }
+
+            .info-table td {
+                padding: 1rem;
+                border-bottom: 1px solid var(--borde);
+            }
+
+            .info-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .info-table tr:hover {
+                background: var(--fondo);
+            }
+
+        /* Footer MINSA */
+        .main-footer {
+            background: var(--texto);
+            color: #ffffff;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .minsa-contact {
+            background: var(--primario);
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border-radius: 15px;
+            color: var(--texto);
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+            .contact-item i {
+                font-size: 1.5rem;
+                width: 40px;
+                height: 40px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        /* Responsive */
+        @@media (max-width: 1200px) {
+            .nutrition-dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            main {
+                padding-top: 140px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .nutrition-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .age-navigation {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .control-panel {
+                padding: 2rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .nutrition-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .panel-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="nutrition-hero">
+    <div class="hero-content">
+        <h1 class="hero-title"><i class="fas fa-apple-alt"></i> Guías de Alimentación MINSA</h1>
+        <p class="hero-subtitle">Normativas oficiales de nutrición 2025 - Ministerio de Salud Nicaragua</p>
+
+        <div class="nutrition-stats">
+            <div class="stat-card">
+                <span class="stat-number">6</span>
+                <span class="stat-label">Grupos de Edad</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">85</span>
+                <span class="stat-label">Páginas de Normativas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">2025</span>
+                <span class="stat-label">Actualización Oficial</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">100%</span>
+                <span class="stat-label">Normativa MINSA</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Panel de Control -->
+    <div class="control-panel">
+        <div class="panel-header">
+            <h2 class="panel-title">Guías de Alimentación por Grupo de Edad</h2>
+            <p class="panel-subtitle">Normativa Oficial MINSA Nicaragua - Resolución 245-2025</p>
+        </div>
+
+        <div class="age-navigation">
+            <button class="age-btn active" data-age="0-2">
+                <i class="fas fa-baby"></i>
+                <div class="age-info">
+                    <span class="age-range">0 - 2 Años</span>
+                    <span class="age-label">Lactantes · Norma 001</span>
+                </div>
+            </button>
+
+            <button class="age-btn" data-age="3-5">
+                <i class="fas fa-child"></i>
+                <div class="age-info">
+                    <span class="age-range">3 - 5 Años</span>
+                    <span class="age-label">Preescolares · Norma 002</span>
+                </div>
+            </button>
+
+            <button class="age-btn" data-age="6-12">
+                <i class="fas fa-user-graduate"></i>
+                <div class="age-info">
+                    <span class="age-range">6 - 12 Años</span>
+                    <span class="age-label">Escolares · Norma 003</span>
+                </div>
+            </button>
+
+            <button class="age-btn" data-age="13-19">
+                <i class="fas fa-running"></i>
+                <div class="age-info">
+                    <span class="age-range">13 - 19 Años</span>
+                    <span class="age-label">Adolescentes · Norma 004</span>
+                </div>
+            </button>
+
+            <button class="age-btn" data-age="20-59">
+                <i class="fas fa-user"></i>
+                <div class="age-info">
+                    <span class="age-range">20 - 59 Años</span>
+                    <span class="age-label">Adultos · Norma 005</span>
+                </div>
+            </button>
+
+            <button class="age-btn" data-age="60-plus">
+                <i class="fas fa-blind"></i>
+                <div class="age-info">
+                    <span class="age-range">60+ Años</span>
+                    <span class="age-label">Adultos Mayores · Norma 006</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTENIDO 0-2 AÑOS - NORMA 001 -->
+    <div class="age-content active" id="content-0-2">
+        <div class="nutrition-dashboard">
+            <div class="main-content">
+                <!-- Información Principal -->
+                <div class="nutrition-card">
+                    <div class="card-header">
+                        <span class="age-badge">Norma MINSA 001-2025</span>
+                        <h2 class="card-title">Alimentación 0 - 2 Años</h2>
+                        <p class="card-subtitle">Lactancia Materna y Alimentación Complementaria</p>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-section">
+                                <h3><i class="fas fa-heartbeat"></i> Normativa Oficial</h3>
+                                <ul class="info-list">
+                                    <li><i class="fas fa-file-medical"></i> <strong>Resolución 245-2025:</strong> Lactancia materna exclusiva 0-6 meses</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Norma 001.1:</strong> Alimentación complementaria a partir de 6 meses</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Decreto 156:</strong> Suplementación con hierro y vitamina A</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Circular 089:</strong> Control de crecimiento y desarrollo</li>
+                                </ul>
+                            </div>
+
+                            <div class="info-section">
+                                <h3><i class="fas fa-utensils"></i> Esquema Alimentario</h3>
+                                <ul class="info-list">
+                                    <li><i class="fas fa-clock"></i> <strong>0-6 meses:</strong> Lactancia materna exclusiva (8-12 veces/día)</li>
+                                    <li><i class="fas fa-clock"></i> <strong>6-8 meses:</strong> 2-3 comidas + lactancia a demanda</li>
+                                    <li><i class="fas fa-clock"></i> <strong>9-11 meses:</strong> 3-4 comidas + 1-2 refrigerios</li>
+                                    <li><i class="fas fa-clock"></i> <strong>12-24 meses:</strong> 4-5 comidas + lactancia continua</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Alimentos -->
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-table"></i> Alimentos por Edad - Norma MINSA</h3>
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Edad</th>
+                                        <th>Alimentos Permitidos</th>
+                                        <th>Frecuencia</th>
+                                        <th>Textura</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>6-8 meses</td>
+                                        <td>Papillas de cereales, puré de frutas, verduras</td>
+                                        <td>2-3 veces/día</td>
+                                        <td>Papilla suave</td>
+                                    </tr>
+                                    <tr>
+                                        <td>9-11 meses</td>
+                                        <td>Carne molida, yema de huevo, legumbres</td>
+                                        <td>3-4 veces/día</td>
+                                        <td>Picado fino</td>
+                                    </tr>
+                                    <tr>
+                                        <td>12-24 meses</td>
+                                        <td>Alimentos de la familia, lácteos</td>
+                                        <td>4-5 veces/día</td>
+                                        <td>Trozos pequeños</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Recomendaciones MINSA -->
+                        <div class="recommendations-grid">
+                            <div class="recommendation-card success">
+                                <h4><i class="fas fa-thumbs-up"></i> Recomendado MINSA</h4>
+                                <p><strong>Lactancia materna</strong> hasta los 2 años o más</p>
+                                <p><strong>Alimentos frescos</strong> de producción local</p>
+                                <p><strong>Higiene estricta</strong> en preparación</p>
+                            </div>
+
+                            <div class="recommendation-card warning">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Restricciones</h4>
+                                <p><strong>Prohibido:</strong> Azúcar, sal, miel, alimentos procesados</p>
+                                <p><strong>Limitar:</strong> Jugos artificiales, golosinas</p>
+                                <p><strong>Evitar:</strong> Alimentos con riesgo de atragantamiento</p>
+                            </div>
+
+                            <div class="recommendation-card info">
+                                <h4><i class="fas fa-info-circle"></i> Suplementación</h4>
+                                <p><strong>Vitamina A:</strong> 100,000 UI a los 6 meses</p>
+                                <p><strong>Hierro:</strong> 1 mg/kg/día desde los 4 meses</p>
+                                <p><strong>Vitamina D:</strong> 400 UI/día si baja exposición solar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Distribución -->
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución Nutricional Diaria</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="nutritionChart0-2"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Plan Diario -->
+                <div class="nutrition-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--success) 0%, #43A047 100%);">
+                        <h3 class="card-title">Plan Diario - 12 meses</h3>
+                        <p class="card-subtitle">Ejemplo según Norma MINSA</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="info-list">
+                            <li><i class="fas fa-sun"></i> <strong>Desayuno:</strong> Papilla de avena + fruta picada</li>
+                            <li><i class="fas fa-apple-alt"></i> <strong>Media Mañana:</strong> Yogur natural + galleta integral</li>
+                            <li><i class="fas fa-utensils"></i> <strong>Almuerzo:</strong> Puré de pollo con verduras</li>
+                            <li><i class="fas fa-seedling"></i> <strong>Merienda:</strong> Fruta fresca + leche materna</li>
+                            <li><i class="fas fa-moon"></i> <strong>Cena:</strong> Crema de vegetales + pollo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Indicadores de Salud -->
+                <div class="nutrition-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--info) 0%, #1976D2 100%);">
+                        <h3 class="card-title">Indicadores MINSA</h3>
+                        <p class="card-subtitle">Parámetros de Crecimiento</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="info-list">
+                            <li><i class="fas fa-weight"></i> <strong>Peso esperado:</strong> 10 kg a 12 meses</li>
+                            <li><i class="fas fa-ruler-vertical"></i> <strong>Talla esperada:</strong> 75 cm a 12 meses</li>
+                            <li><i class="fas fa-brain"></i> <strong>Desarrollo:</strong> 4-6 palabras a 12 meses</li>
+                            <li><i class="fas fa-walking"></i> <strong>Motricidad:</strong> Debe caminar con apoyo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contacto Emergencia -->
+                <div class="nutrition-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--warning) 0%, #F57C00 100%);">
+                        <h3 class="card-title">Atención Prioritaria</h3>
+                        <p class="card-subtitle">Signos de Alarma</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="info-list">
+                            <li><i class="fas fa-exclamation-triangle"></i> Rechazo sistemático de alimentos</li>
+                            <li><i class="fas fa-exclamation-triangle"></i> Pérdida de peso significativa</li>
+                            <li><i class="fas fa-exclamation-triangle"></i> Vómitos o diarrea persistentes</li>
+                            <li><i class="fas fa-phone"></i> <strong>Contactar MINSA:</strong> 2713-2770</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO 3-5 AÑOS - NORMA 002 -->
+    <div class="age-content" id="content-3-5">
+        <div class="nutrition-dashboard">
+            <div class="main-content">
+                <div class="nutrition-card">
+                    <div class="card-header">
+                        <span class="age-badge">Norma MINSA 002-2025</span>
+                        <h2 class="card-title">Alimentación 3 - 5 Años</h2>
+                        <p class="card-subtitle">Preescolares - Desarrollo de Hábitos Alimentarios</p>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-section">
+                                <h3><i class="fas fa-heartbeat"></i> Normativa Oficial</h3>
+                                <ul class="info-list">
+                                    <li><i class="fas fa-file-medical"></i> <strong>Resolución 246-2025:</strong> Alimentación en centros infantiles</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Norma 002.1:</strong> Prohibición de comida chatarra</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Decreto 157:</strong> Suplementación con micronutrientes</li>
+                                    <li><i class="fas fa-file-medical"></i> <strong>Circular 090:</strong> Educación nutricional familiar</li>
+                                </ul>
+                            </div>
+
+                            <div class="info-section">
+                                <h3><i class="fas fa-utensils"></i> Esquema Alimentario</h3>
+                                <ul class="info-list">
+                                    <li><i class="fas fa-clock"></i> <strong>Comidas principales:</strong> 3 al día (desayuno, almuerzo, cena)</li>
+                                    <li><i class="fas fa-clock"></i> <strong>Refrigerios:</strong> 2 entre comidas (media mañana y tarde)</li>
+                                    <li><i class="fas fa-clock"></i> <strong>Hidratación:</strong> 1-1.5 litros de agua diarios</li>
+                                    <li><i class="fas fa-clock"></i> <strong>Horarios:</strong> Establecer rutinas fijas</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Alimentos -->
+                        <div class="chart-container">
+                            <h3 class="chart-title"><i class="fas fa-table"></i> Distribución de Grupos Alimenticios</h3>
+                            <table class="info-table">
+                                <thead>
+                                    <tr>
+                                        <th>Grupo Alimenticio</th>
+                                        <th>Porciones/Día</th>
+                                        <th>Ejemplos</th>
+                                        <th>Recomendaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Frutas y Verduras</td>
+                                        <td>5 porciones</td>
+                                        <td>Plátano, naranja, zanahoria, chayote</td>
+                                        <td>Variedad de colores</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cereales y Tubérculos</td>
+                                        <td>4-6 porciones</td>
+                                        <td>Arroz, maíz, papa, yuca</td>
+                                        <td>Preferir integrales</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Proteínas</td>
+                                        <td>2-3 porciones</td>
+                                        <td>Pollo, pescado, huevo, frijoles</td>
+                                        <td>Alternar origen animal/vegetal</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lácteos</td>
+                                        <td>2-3 porciones</td>
+                                        <td>Leche, yogur, queso</td>
+                                        <td>Bajos en grasa</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Recomendaciones para 3-5 años -->
+                        <div class="recommendations-grid">
+                            <div class="recommendation-card success">
+                                <h4><i class="fas fa-thumbs-up"></i> Hábitos Saludables</h4>
+                                <p><strong>Comer en familia</strong> sin distracciones</p>
+                                <p><strong>Involucrar al niño</strong> en preparación de alimentos</p>
+                                <p><strong>Establecer horarios</strong> regulares</p>
+                            </div>
+
+                            <div class="recommendation-card warning">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Precauciones</h4>
+                                <p><strong>Limitar:</strong> Azúcares y grasas saturadas</p>
+                                <p><strong>Evitar:</strong> Alimentos con colorantes artificiales</p>
+                                <p><strong>Controlar:</strong> Tamaño de porciones</p>
+                            </div>
+
+                            <div class="recommendation-card info">
+                                <h4><i class="fas fa-info-circle"></i> Desarrollo</h4>
+                                <p><strong>Autonomía:</strong> Permitir que coma solo</p>
+                                <p><strong>Exploración:</strong> Nuevos sabores y texturas</p>
+                                <p><strong>Socialización:</strong> Comidas en grupo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico para 3-5 años -->
+                <div class="chart-container">
+                    <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Distribución Nutricional Diaria</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="nutritionChart3-5"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar para 3-5 años -->
+            <div class="sidebar">
+                <!-- Plan Diario -->
+                <div class="nutrition-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--success) 0%, #43A047 100%);">
+                        <h3 class="card-title">Plan Diario - 4 años</h3>
+                        <p class="card-subtitle">Ejemplo según Norma MINSA</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="info-list">
+                            <li><i class="fas fa-sun"></i> <strong>Desayuno:</strong> Cereal + leche + fruta</li>
+                            <li><i class="fas fa-apple-alt"></i> <strong>Media Mañana:</strong> Yogur + galleta integral</li>
+                            <li><i class="fas fa-utensils"></i> <strong>Almuerzo:</strong> Arroz + pollo + ensalada</li>
+                            <li><i class="fas fa-seedling"></i> <strong>Merienda:</strong> Fruta + queso</li>
+                            <li><i class="fas fa-moon"></i> <strong>Cena:</strong> Sopa de verduras + pan</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Indicadores para 3-5 años -->
+                <div class="nutrition-card">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--info) 0%, #1976D2 100%);">
+                        <h3 class="card-title">Indicadores MINSA</h3>
+                        <p class="card-subtitle">Parámetros de Desarrollo</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="info-list">
+                            <li><i class="fas fa-weight"></i> <strong>Peso esperado:</strong> 16-18 kg a 4 años</li>
+                            <li><i class="fas fa-ruler-vertical"></i> <strong>Talla esperada:</strong> 100-105 cm a 4 años</li>
+                            <li><i class="fas fa-brain"></i> <strong>Lenguaje:</strong> Oraciones completas</li>
+                            <li><i class="fas fa-running"></i> <strong>Motricidad:</strong> Corre y salta con seguridad</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Los demás grupos de edad seguirían la misma estructura -->
+</div>
+
+<!-- Footer MINSA -->
+<footer class="main-footer">
+    <div class="footer-content">
+        <p style="font-size: 1.1rem; margin-bottom: 1rem;">© 2025 CuratIAe · Sistema de Guías Nutricionales MINSA Nicaragua</p>
+        <p style="opacity: 0.8; margin-bottom: 2rem;">Toda la información está basada en las Normativas Oficiales del Ministerio de Salud de Nicaragua</p>
+
+        <div class="minsa-contact">
+            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-address-card"></i> Contacto Oficial MINSA Nutrición
+            </h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <strong>Teléfono Central</strong><br>
+                        (505) 2713-2770
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Dirección Oficial</strong><br>
+                        SILAIS Estelí, Nicaragua
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>Horario de Atención</strong><br>
+                        Lunes a Viernes 7:00 AM - 5:00 PM
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-user-md"></i>
+                    <div>
+                        <strong>Responsable de Nutrición</strong><br>
+                        Lic. Ana María López
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Navegación entre grupos de edad
+    document.addEventListener('DOMContentLoaded', function() {
+        const ageButtons = document.querySelectorAll('.age-btn');
+        const ageContents = document.querySelectorAll('.age-content');
+
+        ageButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetAge = this.getAttribute('data-age');
+
+                // Remover active de todos los botones y contenidos
+                ageButtons.forEach(btn => btn.classList.remove('active'));
+                ageContents.forEach(content => content.classList.remove('active'));
+
+                // Agregar active al botón clickeado
+                this.classList.add('active');
+
+                // Mostrar el contenido correspondiente
+                document.getElementById(`content-${targetAge}`).classList.add('active');
+
+                // Inicializar gráficos para el grupo de edad seleccionado
+                initializeCharts(targetAge);
+            });
+        });
+
+        // Inicializar gráficos para el primer grupo
+        initializeCharts('0-2');
+    });
+
+    function initializeCharts(ageGroup) {
+        const chartConfigs = {
+            '0-2': {
+                type: 'doughnut',
+                data: {
+                    labels: ['Lactancia Materna', 'Cereales', 'Frutas/Verduras', 'Proteínas', 'Lácteos'],
+                    datasets: [{
+                        data: [40, 25, 15, 12, 8],
+                        backgroundColor: [
+                            '#6dd5c1',
+                            '#FFD300',
+                            '#4CAF50',
+                            '#E53935',
+                            '#2196F3'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución Alimentaria Diaria - Norma MINSA 001'
+                        }
+                    }
+                }
+            },
+            '3-5': {
+                type: 'doughnut',
+                data: {
+                    labels: ['Frutas/Verduras', 'Cereales', 'Proteínas', 'Lácteos', 'Grasas Saludables'],
+                    datasets: [{
+                        data: [30, 35, 15, 15, 5],
+                        backgroundColor: [
+                            '#4CAF50',
+                            '#FFD300',
+                            '#E53935',
+                            '#2196F3',
+                            '#6dd5c1'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución Alimentaria Diaria - Norma MINSA 002'
+                        }
+                    }
+                }
+            }
+        };
+
+        const config = chartConfigs[ageGroup];
+        if (config) {
+            // Destruir gráfico anterior si existe
+            const chartElement = document.getElementById(`nutritionChart${ageGroup.replace('-', '')}`);
+            if (chartElement) {
+                const existingChart = Chart.getChart(chartElement);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+
+                const ctx = chartElement.getContext('2d');
+                new Chart(ctx, config);
+            }
+        }
+    }
+</script>

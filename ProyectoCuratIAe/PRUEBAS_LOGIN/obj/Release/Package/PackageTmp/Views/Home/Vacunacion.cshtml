@@ -1,0 +1,874 @@
+﻿@{
+    ViewBag.Title = "Jornadas de Vacunación MINSA Nicaragua";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="https://fonts.cdnfonts.com/css/legendum" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primario: #6dd5c1;
+            --secundario: #FFD300;
+            --terciario: #E53935;
+            --texto: #2c3e50;
+            --fondo: #f8fafc;
+            --borde: #e0e6ed;
+        }
+
+        /* Ajuste del main para el header fijo */
+        main {
+            padding-top: 120px;
+        }
+
+        /* Hero Section Vacunación */
+        .vaccination-hero {
+            background: linear-gradient(135deg, var(--primario) 0%, var(--texto) 100%);
+            color: #ffffff;
+            padding: 5rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .vaccination-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Filtros y Búsqueda */
+        .control-panel {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .search-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            padding: 1rem;
+            border: 2px solid var(--borde);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+            .search-input:focus {
+                outline: none;
+                border-color: var(--primario);
+            }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: #ffffff;
+            border: 2px solid var(--borde);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--texto);
+        }
+
+            .filter-btn.active {
+                background: var(--primario);
+                color: var(--texto);
+                border-color: var(--primario);
+            }
+
+        /* Grid de Jornadas */
+        .vaccination-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .vaccination-card {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+            .vaccination-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                border-color: var(--primario);
+            }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--texto) 0%, #1a2530 100%);
+            color: #ffffff;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--secundario);
+            color: var(--texto);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .card-date {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        .vaccine-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .vaccine-tag {
+            background: var(--fondo);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--borde);
+        }
+
+        .target-groups {
+            margin: 1.5rem 0;
+        }
+
+        .group-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--borde);
+        }
+
+            .group-item:last-child {
+                border-bottom: none;
+            }
+
+        .card-footer {
+            padding: 1.5rem 2rem;
+            background: var(--fondo);
+            border-top: 1px solid var(--borde);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--primario);
+            color: var(--texto);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-primary:hover {
+                background: var(--secundario);
+                transform: translateY(-2px);
+            }
+
+        /* Información Importante */
+        .info-section {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            padding: 3rem;
+            margin-top: 3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--fondo);
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primario);
+        }
+
+            .info-card h3 {
+                color: var(--primario);
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+        /* Footer MINSA */
+        .main-footer {
+            background: var(--texto);
+            color: #ffffff;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .minsa-contact {
+            background: var(--primario);
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 10px;
+            color: var(--texto);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @@media (max-width: 1024px) {
+            .vaccination-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-section {
+                grid-template-columns: 1fr;
+            }
+
+            .vaccination-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            main {
+                padding-top: 140px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .vaccination-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .vaccination-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-header {
+                padding: 1.5rem;
+            }
+
+            .card-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="vaccination-hero">
+    <div class="hero-content">
+        <h1 class="hero-title"><i class="fas fa-syringe"></i> Jornadas de Vacunación MINSA</h1>
+        <p class="hero-subtitle">Calendario oficial de vacunación 2025 - Programa Nacional de Inmunizaciones</p>
+
+        <div class="vaccination-stats">
+            <div class="stat-card">
+                <span class="stat-number">15+</span>
+                <span class="stat-label">Tipos de Vacunas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">1,500+</span>
+                <span class="stat-label">Puestos de Vacunación</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">95%</span>
+                <span class="stat-label">Cobertura Nacional</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Costo para la Población</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Panel de Control -->
+    <div class="control-panel">
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="🔍 Buscar jornada por comunidad o centro de salud...">
+            <select class="search-input" id="month-filter">
+                <option value="">Todos los meses</option>
+                <option value="01">Enero 2025</option>
+                <option value="02">Febrero 2025</option>
+                <option value="03">Marzo 2025</option>
+                <option value="04">Abril 2025</option>
+                <option value="05">Mayo 2025</option>
+                <option value="06">Junio 2025</option>
+                <option value="07">Julio 2025</option>
+                <option value="08">Agosto 2025</option>
+                <option value="09">Septiembre 2025</option>
+                <option value="10">Octubre 2025</option>
+                <option value="11">Noviembre 2025</option>
+                <option value="12">Diciembre 2025</option>
+            </select>
+            <select class="search-input" id="department-filter">
+                <option value="">Todos los departamentos</option>
+                <option value="boaco">Boaco</option>
+                <option value="carazo">Carazo</option>
+                <option value="chinandega">Chinandega</option>
+                <option value="chontales">Chontales</option>
+                <option value="esteli">Estelí</option>
+                <option value="granada">Granada</option>
+                <option value="jinotega">Jinotega</option>
+                <option value="leon">León</option>
+                <option value="madriz">Madriz</option>
+                <option value="managua">Managua</option>
+                <option value="masaya">Masaya</option>
+                <option value="matagalpa">Matagalpa</option>
+                <option value="nueva-segovia">Nueva Segovia</option>
+                <option value="raccn">RAACN</option>
+                <option value="raas">RAAS</option>
+                <option value="rio-san-juan">Río San Juan</option>
+                <option value="rivas">Rivas</option>
+            </select>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">Todas las Jornadas</button>
+            <button class="filter-btn" data-filter="infantil">Vacunación Infantil</button>
+            <button class="filter-btn" data-filter="adultos">Adultos y Adultos Mayores</button>
+            <button class="filter-btn" data-filter="esquema">Esquema Regular</button>
+            <button class="filter-btn" data-filter="campaña">Campañas Especiales</button>
+        </div>
+    </div>
+
+    <!-- Grid de Jornadas de Vacunación -->
+    <div class="vaccination-grid" id="vaccination-grid">
+        <!-- Jornada 1 -->
+        <div class="vaccination-card" data-type="infantil esquema" data-month="01" data-department="esteli">
+            <div class="card-header">
+                <span class="card-badge">Infantil</span>
+                <div class="card-date">15 - 30 Enero 2025</div>
+                <h3 class="card-title">Jornada de Vacunación Infantil</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Centro de Salud Central Estelí</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Población objetivo:</strong> Niños y niñas de 0 a 5 años</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">Pentavalente</span>
+                    <span class="vaccine-tag">Polio</span>
+                    <span class="vaccine-tag">SRP</span>
+                    <span class="vaccine-tag">Rotavirus</span>
+                    <span class="vaccine-tag">Neumococo</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-baby" style="color: var(--primario);"></i>
+                        <span><strong>Recién nacidos:</strong> BCG y Hepatitis B</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-child" style="color: var(--primario);"></i>
+                        <span><strong>2-6 meses:</strong> Esquema básico completo</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-running" style="color: var(--primario);"></i>
+                        <span><strong>1-5 años:</strong> Refuerzos y SRP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario:</strong> 7:00 AM - 3:00 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-calendar-plus"></i> Agendar Cita
+                </button>
+            </div>
+        </div>
+
+        <!-- Jornada 2 -->
+        <div class="vaccination-card" data-type="adultos campaña" data-month="02" data-department="esteli">
+            <div class="card-header">
+                <span class="card-badge">Adultos Mayores</span>
+                <div class="card-date">1 - 15 Febrero 2025</div>
+                <h3 class="card-title">Campaña Influenza Estacional</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Todos los centros de salud - Municipio de Estelí</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Población prioritaria:</strong> Adultos mayores, embarazadas, personal de salud</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">Influenza</span>
+                    <span class="vaccine-tag">Neumococo</span>
+                    <span class="vaccine-tag">COVID-19</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-user-md" style="color: var(--primario);"></i>
+                        <span><strong>Personal de salud:</strong> Primera prioridad</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-blind" style="color: var(--primario);"></i>
+                        <span><strong>Adultos ≥60 años:</strong> Grupos de riesgo</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-female" style="color: var(--primario);"></i>
+                        <span><strong>Embarazadas:</strong> Cualquier trimestre</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario extendido:</strong> 6:00 AM - 5:00 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-file-medical"></i> Ver Centros
+                </button>
+            </div>
+        </div>
+
+        <!-- Jornada 3 -->
+        <div class="vaccination-card" data-type="esquema" data-month="03" data-department="esteli">
+            <div class="card-header">
+                <span class="card-badge">Esquema Regular</span>
+                <div class="card-date">10 - 24 Marzo 2025</div>
+                <h3 class="card-title">Vacunación de Rutina Mensual</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Puestos de Salud periféricos</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Atención:</strong> Para todas las edades - Esquema regular</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">TD</span>
+                    <span class="vaccine-tag">Hepatitis B</span>
+                    <span class="vaccine-tag">VPH</span>
+                    <span class="vaccine-tag">Fiebre Amarilla</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-school" style="color: var(--primario);"></i>
+                        <span><strong>Adolescentes:</strong> VPH y TD</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-briefcase-medical" style="color: var(--primario);"></i>
+                        <span><strong>Viajeros:</strong> Fiebre amarilla</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-users" style="color: var(--primario);"></i>
+                        <span><strong>Población general:</strong> Hepatitis B</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario:</strong> 7:30 AM - 2:30 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-directions"></i> Ver Ubicaciones
+                </button>
+            </div>
+        </div>
+
+        <!-- Jornada 4 -->
+        <div class="vaccination-card" data-type="infantil campaña" data-month="04" data-department="managua">
+            <div class="card-header">
+                <span class="card-badge">Campaña Nacional</span>
+                <div class="card-date">5 - 20 Abril 2025</div>
+                <h3 class="card-title">Semana de Vacunación de las Américas</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Centros de Salud de Managua y áreas metropolitanas</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Población objetivo:</strong> Niños menores de 5 años con esquema incompleto</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">Polio</span>
+                    <span class="vaccine-tag">SRP</span>
+                    <span class="vaccine-tag">Pentavalente</span>
+                    <span class="vaccine-tag">BCG</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-baby" style="color: var(--primario);"></i>
+                        <span><strong>0-11 meses:</strong> Esquema básico</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-child" style="color: var(--primario);"></i>
+                        <span><strong>1-4 años:</strong> Refuerzos y dosis pendientes</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-home" style="color: var(--primario);"></i>
+                        <span><strong>Comunidades marginadas:</strong> Cobertura especial</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario extendido:</strong> 6:00 AM - 6:00 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-calendar-plus"></i> Agendar Cita
+                </button>
+            </div>
+        </div>
+
+        <!-- Jornada 5 -->
+        <div class="vaccination-card" data-type="adultos esquema" data-month="05" data-department="leon">
+            <div class="card-header">
+                <span class="card-badge">Adultos</span>
+                <div class="card-date">8 - 22 Mayo 2025</div>
+                <h3 class="card-title">Jornada de Vacunación para Trabajadores</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Centros de Salud de León y empresas asociadas</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Población objetivo:</strong> Trabajadores de sectores prioritarios</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">Td</span>
+                    <span class="vaccine-tag">Hepatitis B</span>
+                    <span class="vaccine-tag">Fiebre Tifoidea</span>
+                    <span class="vaccine-tag">COVID-19</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-industry" style="color: var(--primario);"></i>
+                        <span><strong>Trabajadores industriales:</strong> Td cada 10 años</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-utensils" style="color: var(--primario);"></i>
+                        <span><strong>Manipuladores de alimentos:</strong> Fiebre tifoidea</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-truck-medical" style="color: var(--primario);"></i>
+                        <span><strong>Personal de salud:</strong> Hepatitis B y refuerzos</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario:</strong> 7:00 AM - 4:00 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-file-medical"></i> Ver Centros
+                </button>
+            </div>
+        </div>
+
+        <!-- Jornada 6 -->
+        <div class="vaccination-card" data-type="campaña" data-month="06" data-department="rivas">
+            <div class="card-header">
+                <span class="card-badge">Campaña Especial</span>
+                <div class="card-date">12 - 26 Junio 2025</div>
+                <h3 class="card-title">Vacunación en Zonas Turísticas</h3>
+                <div class="card-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Puestos móviles en zonas turísticas de Rivas</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <p><strong>Población objetivo:</strong> Residentes y trabajadores del sector turismo</p>
+
+                <div class="vaccine-list">
+                    <span class="vaccine-tag">Fiebre Amarilla</span>
+                    <span class="vaccine-tag">Hepatitis A</span>
+                    <span class="vaccine-tag">Tifoidea</span>
+                    <span class="vaccine-tag">COVID-19</span>
+                </div>
+
+                <div class="target-groups">
+                    <div class="group-item">
+                        <i class="fas fa-hotel" style="color: var(--primario);"></i>
+                        <span><strong>Trabajadores hoteleros:</strong> Hepatitis A y tifoidea</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-umbrella-beach" style="color: var(--primario);"></i>
+                        <span><strong>Guías turísticos:</strong> Fiebre amarilla</span>
+                    </div>
+                    <div class="group-item">
+                        <i class="fas fa-users" style="color: var(--primario);"></i>
+                        <span><strong>Población local:</strong> Esquema regular</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <strong><i class="fas fa-clock"></i> Horario:</strong> 8:00 AM - 5:00 PM
+                </div>
+                <button class="btn-primary">
+                    <i class="fas fa-directions"></i> Ver Ubicaciones
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información Importante -->
+    <section class="info-section">
+        <h2 style="text-align: center; margin-bottom: 2rem; color: var(--texto);">
+            <i class="fas fa-info-circle"></i> Información Importante para la Vacunación
+        </h2>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><i class="fas fa-clipboard-list"></i> Documentos Requeridos</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">✓ Cédula de identidad o partida de nacimiento</li>
+                    <li style="padding: 0.5rem 0;">✓ Cartilla de vacunación (si posee)</li>
+                    <li style="padding: 0.5rem 0;">✓ Carnet de citas médicas</li>
+                    <li style="padding: 0.5rem 0;">✓ Documento de embarazo (para embarazadas)</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fas fa-hand-holding-heart"></i> Beneficios de la Vacunación</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">✓ Protección contra enfermedades graves</li>
+                    <li style="padding: 0.5rem 0;">✓ Fortalecimiento del sistema inmunológico</li>
+                    <li style="padding: 0.5rem 0;">✓ Prevención de epidemias</li>
+                    <li style="padding: 0.5rem 0;">✓ Cero costo para la población</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Contraindicaciones</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0;">✗ Fiebre mayor a 38°C</li>
+                    <li style="padding: 0.5rem 0;">✗ Alergia severa a componentes</li>
+                    <li style="padding: 0.5rem 0;">✗ Enfermedad grave aguda</li>
+                    <li style="padding: 0.5rem 0;">✗ Tratamiento inmunosupresor</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Footer MINSA -->
+<footer class="main-footer">
+    <div class="footer-content">
+        <p>© 2025 CuratIAe · Programa Nacional de Inmunizaciones - Ministerio de Salud de Nicaragua</p>
+
+        <div class="minsa-contact">
+            <h3><i class="fas fa-phone-alt"></i> Contacto Oficial MINSA</h3>
+            <p><strong>Teléfono Central:</strong> (505) 2254-7884 / 2254-7636</p>
+            <p><strong>Dirección Central:</strong> Complejo Nacional de Salud "Dr. Conchita Palacios", Managua, Nicaragua</p>
+            <p><strong>Horario de atención:</strong> Lunes a Viernes 7:00 AM - 5:00 PM</p>
+            <p><strong>Responsable Nacional de Inmunizaciones:</strong> Dra. María Delia Espinoza</p>
+            <p><strong>Sitio web oficial:</strong> <a href="https://www.minsa.gob.ni" style="color: var(--texto); text-decoration: underline;">www.minsa.gob.ni</a></p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Funcionalidad de filtros
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const vaccinationCards = document.querySelectorAll('.vaccination-card');
+        const monthFilter = document.getElementById('month-filter');
+        const departmentFilter = document.getElementById('department-filter');
+        const searchInput = document.querySelector('.search-input[type="text"]');
+
+        // Filtros por tipo
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remover clase active de todos los botones
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Agregar clase active al botón clickeado
+                this.classList.add('active');
+
+                const filterValue = this.getAttribute('data-filter');
+
+                vaccinationCards.forEach(card => {
+                    if (filterValue === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        if (card.getAttribute('data-type').includes(filterValue)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Filtros por mes y departamento
+        function applyFilters() {
+            const monthValue = monthFilter.value;
+            const departmentValue = departmentFilter.value;
+            const searchValue = searchInput.value.toLowerCase();
+
+            vaccinationCards.forEach(card => {
+                const cardMonth = card.getAttribute('data-month');
+                const cardDepartment = card.getAttribute('data-department');
+                const cardText = card.textContent.toLowerCase();
+
+                const monthMatch = monthValue === '' || cardMonth === monthValue;
+                const departmentMatch = departmentValue === '' || cardDepartment === departmentValue;
+                const searchMatch = cardText.includes(searchValue);
+
+                if (monthMatch && departmentMatch && searchMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        monthFilter.addEventListener('change', applyFilters);
+        departmentFilter.addEventListener('change', applyFilters);
+        searchInput.addEventListener('input', applyFilters);
+
+        // Simular clic en el primer botón de filtro para mostrar todas las tarjetas
+        document.querySelector('.filter-btn[data-filter="all"]').click();
+
+        // Funcionalidad de botones
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('click', function() {
+                const card = this.closest('.vaccination-card');
+                const title = card.querySelector('.card-title').textContent;
+                const date = card.querySelector('.card-date').textContent;
+                const location = card.querySelector('.card-location span').textContent;
+
+                alert(`Información de la jornada:\n\n${title}\n${date}\n${location}\n\nPara agendar su cita, visite el centro de salud más cercano o llame al (505) 2254-7884`);
+            });
+        });
+    });
+</script>

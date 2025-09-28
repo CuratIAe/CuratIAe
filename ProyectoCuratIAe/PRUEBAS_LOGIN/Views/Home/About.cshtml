@@ -1,0 +1,589 @@
+﻿@{
+    ViewBag.Title = "CuratIAe - Nosotros y Contáctanos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="https://fonts.cdnfonts.com/css/legendum" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primario: #6dd5c1;
+            --secundario: #FFD300;
+            --terciario: #E53935;
+            --texto: #2c3e50;
+            --fondo: #f8fafc;
+            --borde: #e0e6ed;
+            --exito: #4CAF50;
+            --alerta: #FF9800;
+        }
+
+        /* Ajuste del main para el header fijo */
+        main {
+            padding-top: 120px;
+        }
+
+        /* Hero Section */
+        .about-hero {
+            background: linear-gradient(135deg, var(--primario) 0%, var(--texto) 100%);
+            color: #ffffff;
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Secciones */
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Tarjetas de Información */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--borde);
+        }
+
+            .info-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            }
+
+        .info-card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primario) 0%, #5bc4b0 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .info-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--texto);
+        }
+
+        .info-card-content {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* Equipo */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+            .team-member:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            }
+
+        .member-photo {
+            height: 250px;
+            background: linear-gradient(135deg, var(--primario) 0%, var(--texto) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .member-info {
+            padding: 1.5rem;
+        }
+
+        .member-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: var(--primario);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .member-bio {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Formulario de Contacto */
+        .contact-form-container {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 3rem;
+        }
+
+        .form-side {
+            padding: 3rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--texto);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--texto);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--borde);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-input:focus, .form-textarea:focus {
+                outline: none;
+                border-color: var(--primario);
+            }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-submit {
+            background: var(--primario);
+            color: var(--texto);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .btn-submit:hover {
+                background: var(--secundario);
+                transform: translateY(-2px);
+            }
+
+        .info-side {
+            background: linear-gradient(135deg, var(--texto) 0%, #1a2530 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-info {
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .contact-details h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-details p {
+            opacity: 0.9;
+        }
+
+        /* Footer MINSA */
+        .main-footer {
+            background: var(--texto);
+            color: #ffffff;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .minsa-contact {
+            background: var(--primario);
+            padding: 2.5rem;
+            margin-top: 2rem;
+            border-radius: 15px;
+            color: var(--texto);
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @@media (max-width: 1024px) {
+            .contact-form-container {
+                grid-template-columns: 1fr;
+            }
+
+            .info-side {
+                order: -1;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            main {
+                padding-top: 140px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .info-cards, .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .form-side, .info-side {
+                padding: 2rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .info-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="hero-content">
+        <h1 class="hero-title"><i class="fas fa-users"></i> Sobre CuratIAe</h1>
+        <p class="hero-subtitle">Conectando tecnología y salud para el bienestar de Nicaragua</p>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Sección Nosotros -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-heartbeat"></i> Nuestra Misión</h2>
+            <p class="section-subtitle">CuratIAe es una iniciativa innovadora que combina inteligencia artificial con atención médica para mejorar el acceso a servicios de salud en Nicaragua.</p>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3 class="info-card-title">Nuestra Visión</h3>
+                <div class="info-card-content">
+                    <p>Ser el sistema de referencia nacional en telemedicina y asistencia médica inteligente, garantizando acceso equitativo a servicios de salud de calidad para todos los nicaragüenses.</p>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="info-card-title">Nuestros Valores</h3>
+                <div class="info-card-content">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.5rem 0;"><i class="fas fa-check" style="color: var(--primario);"></i> <strong>Innovación:</strong> Aplicamos tecnología de vanguardia</li>
+                        <li style="padding: 0.5rem 0;"><i class="fas fa-check" style="color: var(--primario);"></i> <strong>Accesibilidad:</strong> Servicios gratuitos para toda la población</li>
+                        <li style="padding: 0.5rem 0;"><i class="fas fa-check" style="color: var(--primario);"></i> <strong>Confianza:</strong> Información avalada por MINSA</li>
+                        <li style="padding: 0.5rem 0;"><i class="fas fa-check" style="color: var(--primario);"></i> <strong>Compromiso:</strong> Mejora continua de nuestros servicios</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="info-card-title">Nuestro Impacto</h3>
+                <div class="info-card-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primario);">50,000+</div>
+                            <div style="font-size: 0.9rem;">Consultas atendidas</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primario);">120+</div>
+                            <div style="font-size: 0.9rem;">Comunidades alcanzadas</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primario);">95%</div>
+                            <div style="font-size: 0.9rem;">Satisfacción del usuario</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primario);">24/7</div>
+                            <div style="font-size: 0.9rem;">Disponibilidad del servicio</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Equipo -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-user-md"></i> Nuestro Equipo</h2>
+            <p class="section-subtitle">Profesionales comprometidos con la innovación en salud pública</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-photo">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="member-info">
+                    <h3 class="member-name">Dra. Elena Mendoza</h3>
+                    <div class="member-role">Directora Médica</div>
+                    <p class="member-bio">Médica especialista en salud pública con 15 años de experiencia en el sistema de salud nicaragüense. Lidera el desarrollo de protocolos médicos del sistema.</p>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-photo">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="member-info">
+                    <h3 class="member-name">Ing. Carlos Ruiz</h3>
+                    <div class="member-role">Director Tecnológico</div>
+                    <p class="member-bio">Especialista en inteligencia artificial y desarrollo de software con amplia experiencia en proyectos de e-salud. Responsable de la arquitectura del sistema.</p>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-photo">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="member-info">
+                    <h3 class="member-name">Lic. Ana Gutiérrez</h3>
+                    <div class="member-role">Coordinadora de Proyectos</div>
+                    <p class="member-bio">Experta en gestión de proyectos de salud digital y coordinación con instituciones públicas. Encargada de la expansión del sistema a nivel nacional.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section class="section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-envelope"></i> Contáctanos</h2>
+            <p class="section-subtitle">Estamos aquí para responder tus preguntas y escuchar tus sugerencias</p>
+        </div>
+
+        <div class="contact-form-container">
+            <div class="form-side">
+                <h3 class="form-title">Envía un mensaje</h3>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Nombre completo</label>
+                        <input type="text" id="name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Correo electrónico</label>
+                        <input type="email" id="email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Asunto</label>
+                        <input type="text" id="subject" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message" class="form-label">Mensaje</label>
+                        <textarea id="message" class="form-textarea" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Enviar mensaje
+                    </button>
+                </form>
+            </div>
+
+            <div class="info-side">
+                <h3 style="margin-bottom: 2rem; font-size: 1.8rem;">Información de contacto</h3>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Dirección</h3>
+                            <p>Costado Norte del Parque Central<br>Estelí, Nicaragua</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Teléfono</h3>
+                            <p>(505) 2713-2222<br>Lunes a Viernes 7:00 AM - 5:00 PM</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Correo electrónico</h3>
+                            <p>info@curatiae.gob.ni<br>soporte@curatiae.gob.ni</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h3>Horario de atención</h3>
+                            <p>Lunes a Viernes: 7:00 AM - 5:00 PM<br>Sábados: 8:00 AM - 12:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    // Manejo del formulario de contacto
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Simulación de envío exitoso
+        const name = document.getElementById('name').value;
+        const subject = document.getElementById('subject').value;
+
+        // Mostrar mensaje de éxito
+        alert(`¡Gracias ${name}! Tu mensaje sobre "${subject}" ha sido enviado correctamente. Te contactaremos pronto.`);
+
+        // Limpiar formulario
+        document.getElementById('contactForm').reset();
+    });
+
+    // Efectos de scroll suave para navegación
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>

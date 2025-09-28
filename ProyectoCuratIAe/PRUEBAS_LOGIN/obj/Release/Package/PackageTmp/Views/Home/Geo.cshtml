@@ -1,0 +1,261 @@
+﻿@{
+    ViewBag.Title = "Geolocalización";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <style>
+        #app {
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 120px);
+        }
+
+        #sidebar {
+            width: 300px;
+            background: #fff;
+            padding: 15px;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        #map {
+            flex: 1;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        input[type="search"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        ul.center-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li.center-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+            li.center-item:hover {
+                background: #f0f8ff;
+            }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .info-box {
+            position: absolute;
+            top: 80px;
+            left: 320px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+            .info-box button {
+                background: #16a34a;
+                margin-top: 5px;
+            }
+    </style>
+}
+
+<div id="app">
+    <aside id="sidebar">
+        <h1>Centros de Salud en Estelí</h1>
+        <input id="search" type="search" placeholder="Buscar centro..." />
+        <ul id="list" class="center-list"></ul>
+        <button onclick="miUbicacion()">📍 Mi ubicación</button>
+    </aside>
+
+    <div id="map"></div>
+</div>
+
+@section scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        const centers = [
+            { name: "Centro de Salud Leonel Rugama", lat: 13.07233, lon: -86.35326, address: "Frente al Instituto Nacional Francisco Luis" },
+            { name: "Hospital San Juan de Dios", lat: 13.06613, lon: -86.34990, address: "Salida sur de Estelí Km 146, Bo. Justo Flores" },
+            { name: "Centro de Salud Melania Florián", lat: 13.0876, lon: -86.34787, address: "Cerca de la iglesia católica" },
+            { name: "Centro de Salud Héroes y Mártires", lat: 13.10297, lon: -86.36269, address: "Departamento de Estelí" },
+            { name: "Hospital de Día Monseñor J. Abelardo Mata G.", lat: 13.08594, lon: -86.35606, address: "Enitel 1 c. al Este" },
+            { name: "Hospital Regional de Estelí", lat: 13.0876, lon: -86.34787, address: "Carretera Panamericana Km 147" }
+        ];
+
+        const map = L.map('map').setView([13.0876, -86.34787], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const hospitalIcon = L.icon({
+            iconUrl: 'https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png'
+        });
+
+        const markers = L.layerGroup().addTo(map);
+        const listEl = document.getElementById('list');
+
+        centers.forEach((c) => {
+            const m = L.marker([c.lat, c.lon], { icon: hospitalIcon })
+                .addTo(markers)
+                .bindPopup(`<strong>${c.name}</strong><br>${c.address}`);
+
+            const li = document.createElement('li');
+            li.className = 'center-item';
+            li.innerHTML = `${c.name} - ${c.address}`;
+            li.addEventListener('click', () => {
+                map.setView([c.lat, c.lon], 15);
+                m.openPopup();
+            });
+            listEl.appendChild(li);
+
+            c._marker = m;
+            c._listItem = li;
+        });
+
+        document.getElementById('search').addEventListener('input', (e) => {
+            const q = e.target.value.toLowerCase();
+            centers.forEach(c => {
+                const visible = !q || c.name.toLowerCase().includes(q);
+                c._marker.setOpacity(visible ? 1 : 0);
+                c._listItem.style.display = visible ? '' : 'none';
+            });
+        });
+
+        let routingControl;
+        const infoBox = L.control({ position: 'topright' });
+
+        infoBox.onAdd = function () {
+            const div = L.DomUtil.create('div', 'info-box');
+            div.innerHTML = "Pulsa 📍 Mi ubicación para encontrar el centro más cercano.";
+            return div;
+        };
+        infoBox.addTo(map);
+
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            function toRad(x) { return x * Math.PI / 180; }
+            const R = 6371;
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        function miUbicacion() {
+            if (!navigator.geolocation) {
+                alert("Tu navegador no soporta geolocalización.");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function (pos) {
+                    const lat = pos.coords.latitude;
+                    const lon = pos.coords.longitude;
+
+                    const userMarker = L.marker([lat, lon], {
+                        icon: L.icon({
+                            iconUrl: 'https://cdn-icons-png.flaticon.com/512/4870/4870290.png',
+                            iconSize: [30, 30],
+                            iconAnchor: [15, 30],
+                            popupAnchor: [0, -30]
+                        })
+                    }).addTo(map);
+
+                    userMarker.bindPopup("<b>📍 Tú estás aquí</b>").openPopup();
+                    map.setView([lat, lon], 15);
+
+                    let minDist = Infinity;
+                    let nearestCenter = null;
+
+                    centers.forEach(c => {
+                        const dist = haversineDistance(lat, lon, c.lat, c.lon);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            nearestCenter = c;
+                        }
+                    });
+
+                    if (nearestCenter) {
+                        const distKm = minDist.toFixed(2);
+
+                        if (!infoBox._map) {
+                            infoBox.addTo(map);
+                        }
+
+                        infoBox.getContainer().innerHTML = `
+                                <b>Centro más cercano:</b><br>
+                                ${nearestCenter.name} <br>
+                                Distancia: ${distKm} km <br>
+                                <button onclick="abrirGoogleMaps(${lat}, ${lon}, ${nearestCenter.lat}, ${nearestCenter.lon})">
+                                    🚗 Abrir ruta en Google Maps
+                                </button>
+                            `;
+
+                        if (routingControl) map.removeControl(routingControl);
+
+                        routingControl = L.Routing.control({
+                            waypoints: [
+                                L.latLng(lat, lon),
+                                L.latLng(nearestCenter.lat, nearestCenter.lon)
+                            ],
+                            routeWhileDragging: false,
+                            geocoder: L.Control.Geocoder.nominatim()
+                        }).addTo(map);
+                    }
+                },
+                function (error) {
+                    alert("No se pudo obtener la ubicación: " + error.message);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function abrirGoogleMaps(lat1, lon1, lat2, lon2) {
+            const url = `https://www.google.com/maps/dir/?api=1&origin=${lat1},${lon1}&destination=${lat2},${lon2}&travelmode=driving`;
+            window.open(url, '_blank');
+        }
+    </script>
+}

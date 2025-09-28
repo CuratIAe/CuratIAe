@@ -1,0 +1,148 @@
+﻿@{
+    ViewBag.Title = "Chat con CuratIAe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Suponiendo que el Id del paciente viene de la sesión
+    //int idPaciente = (int)Session["IdPaciente"];
+}
+
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="logo">DS</div>
+        <div>
+            <h1>Doctor CuratIAe te atiende</h1>
+            <div class="meta">El doctor CuratIAe no reemplaza a un médico real, solamente da consejos</div>
+        </div>
+    </div>
+
+    <div id="messages" aria-live="polite"></div>
+
+    <form id="chatForm">
+        <input id="prompt" type="text" placeholder="Escribe tu mensaje..." autocomplete="off" required />
+        <button type="submit">Enviar</button>
+    </form>
+
+    <div class="small">El Grupo CuratIAe Vision te da la bienvenida</div>
+</div>
+
+@section styles {
+    <link rel="stylesheet" href="~/Content/css/chat.css" />
+}
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        let CONFIG = {}
+
+        async function loadConfig() {
+            const res = await fetch("/Content/config.json")
+            CONFIG = await res.json()
+            console.log("✅ Configuración cargada", CONFIG)
+        }
+
+        const messagesEl = document.getElementById('messages')
+        const form = document.getElementById('chatForm')
+        const promptInput = document.getElementById('prompt')
+
+        ////const idPaciente = arroba idPaciente; // Traído de la sesión
+
+        function appendMessage(text, who = 'bot') {
+            const wrapper = document.createElement('div')
+            wrapper.className = 'msg ' + (who === 'user' ? 'user' : 'bot')
+            const bubble = document.createElement('div')
+            bubble.className = 'bubble ' + (who === 'user' ? 'user' : 'bot')
+
+            if (who === 'bot') {
+                bubble.innerHTML = marked.parse(text || "")
+            } else {
+                bubble.textContent = text
+            }
+
+            wrapper.appendChild(bubble)
+            messagesEl.appendChild(wrapper)
+            messagesEl.scrollTop = messagesEl.scrollHeight
+            return bubble
+        }
+
+        appendMessage('Hola 👋 — soy el Doctor CuratIAe ¿En qué puedo ayudarte hoy?.', 'bot')
+
+        // Función para guardar mensaje en la BD
+        //async function guardarMensaje(text, quien) {
+        //    try {
+        //        await fetch('/Chat/GuardarMensaje', {
+        //            method: 'POST',
+        //            headers: { 'Content-Type': 'application/json' },
+        //            body: JSON.stringify({ idPaciente: idPaciente, mensaje: text, quien: quien })
+        //        });
+        //    } catch (err) {
+        //        console.error("Error guardando mensaje:", err);
+        //    }
+        //}
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const text = promptInput.value.trim()
+            if (!text) return
+            appendMessage(text, 'user')
+            promptInput.value = ''
+
+            const bubble = appendMessage('', 'bot')
+
+            try {
+                const res = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${CONFIG.API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: 'Eres un asistente útil.' },
+                            { role: 'user', content: text }
+                        ],
+                        max_tokens: 500,
+                        stream: true
+                    })
+                })
+
+                if (!res.ok) {
+                    const errText = await res.text()
+                    throw new Error(errText || 'Error en el servidor')
+                }
+
+                const reader = res.body.getReader()
+                const decoder = new TextDecoder("utf-8")
+                let buffer = ""
+
+                while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) break
+                    const chunk = decoder.decode(value, { stream: true })
+                    const lines = chunk.split("\n").filter(l => l.trim().startsWith("data:"))
+
+                    for (const line of lines) {
+                        if (line.trim() === "data: [DONE]") return
+                        try {
+                            const json = JSON.parse(line.replace("data: ", ""))
+                            const token = json.choices?.[0]?.delta?.content
+                            if (token) {
+                                buffer += token
+                                bubble.innerHTML = marked.parse(buffer)
+                                messagesEl.scrollTop = messagesEl.scrollHeight
+                            }
+                        } catch (err) {
+                            console.warn("Error parseando línea:", line)
+                        }
+                    }
+                }
+
+            } catch (err) {
+                bubble.textContent = 'Error: ' + (err.message || err)
+                console.error(err)
+            }
+        })
+
+        loadConfig()
+    </script>
+}

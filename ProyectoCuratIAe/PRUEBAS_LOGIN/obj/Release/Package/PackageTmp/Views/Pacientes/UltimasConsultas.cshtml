@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Informe de Pacientes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Pacientes con sus últimas consultas</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Paciente</th>
+            <th>Identificación</th>
+            <th>Fecha Última Consulta</th>
+            <th>Estado Consulta</th>
+            <th>Nivel Gravedad</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (System.Data.DataRow row in (System.Data.DataTable)Model.Rows)
+        {
+            <tr>
+                <td>@row["NombreCompleto"]</td>
+                <td>@row["NumeroIdentificacion"]</td>
+                <td>@row["FechaUltimaConsulta"]</td>
+                <td>@row["EstadoConsulta"]</td>
+                <td>@row["NivelGravedad"]</td>
+            </tr>
+        }
+    </tbody>
+</table>

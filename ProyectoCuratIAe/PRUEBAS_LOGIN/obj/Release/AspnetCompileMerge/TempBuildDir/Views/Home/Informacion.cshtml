@@ -1,0 +1,684 @@
+﻿@{
+    ViewBag.Title = "Recursos y Servicios de Salud";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <link href="https://fonts.cdnfonts.com/css/legendum" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primario: #6dd5c1;
+            --secundario: #FFD300;
+            --terciario: #E53935;
+            --texto: #2c3e50;
+            --fondo: #f8fafc;
+            --borde: #e0e6ed;
+            --exito: #4CAF50;
+            --alerta: #FF9800;
+        }
+
+        /* Ajuste del main para el header fijo */
+        main {
+            padding-top: 120px;
+        }
+
+        /* Hero Section Compacta */
+        .info-hero {
+            background: linear-gradient(135deg, var(--primario) 0%, #2c3e50 100%);
+            color: #ffffff;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Main Content */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+            .section-title h2 {
+                font-size: 2.2rem;
+                color: var(--texto);
+                margin-bottom: 0.5rem;
+            }
+
+            .section-title p {
+                font-size: 1.1rem;
+                color: #666;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+        /* Grid de Widgets */
+        .widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Widget Base Estilo */
+        .widget {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--borde);
+            height: fit-content;
+        }
+
+            .widget:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            }
+
+        .widget-header {
+            background: linear-gradient(135deg, var(--fondo) 0%, #ffffff 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--borde);
+        }
+
+        .widget-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .widget-clinicas .widget-icon {
+            background: var(--terciario);
+        }
+
+        .widget-alimentacion .widget-icon {
+            background: var(--secundario);
+            color: var(--texto);
+        }
+
+        .widget-vacunacion .widget-icon {
+            background: var(--primario);
+        }
+
+        .widget-minsa .widget-icon {
+            background: var(--texto);
+        }
+
+        .widget-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--texto);
+            margin-bottom: 0.5rem;
+        }
+
+        .widget-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .widget-content {
+            padding: 2rem;
+        }
+
+        /* Contenido específico de cada widget */
+        .clinica-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .clinica-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--fondo);
+            border-radius: 10px;
+        }
+
+        .clinica-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--terciario);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .clinica-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .clinica-info p {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .estado-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .estado-abierto {
+            background: var(--exito);
+            color: #ffffff;
+        }
+
+        .estado-cerrado {
+            background: var(--alerta);
+            color: #ffffff;
+        }
+
+        .grupo-alimentacion {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .grupo-item {
+            background: #ffffff;
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .grupo-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .edad-badge {
+            background: var(--primario);
+            color: #ffffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .recomendaciones-list {
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+            .recomendaciones-list li {
+                padding: 0.4rem 0;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+                .recomendaciones-list li i {
+                    color: var(--primario);
+                    font-size: 0.9rem;
+                }
+
+        .jornada-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .jornada-item {
+            background: linear-gradient(135deg, #f0f7ff 0%, #f8f0ff 100%);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primario);
+        }
+
+        .jornada-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .jornada-fecha {
+            background: var(--primario);
+            color: #ffffff;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .vacuna-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .vacuna-tag {
+            background: #ffffff;
+            padding: 0.3rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid var(--borde);
+        }
+
+        .programa-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .programa-item {
+            background: #ffffff;
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .programa-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .programa-logo {
+            width: 45px;
+            height: 45px;
+            background: var(--texto);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
+
+        .programa-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.6rem;
+            background: var(--fondo);
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primario);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        /* Botones de Acción */
+        .btn-widget {
+            background: var(--primario);
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-family: 'Legendum', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+            .btn-widget:hover {
+                background: #5bc4b0;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(109, 213, 193, 0.3);
+                text-decoration: none;
+                color: #ffffff;
+            }
+
+            .btn-widget i {
+                font-size: 1rem;
+            }
+
+        /* Responsive Design */
+        @@media (max-width: 1024px) {
+            .widgets-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            main {
+                padding-top: 140px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .clinica-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 0.8rem;
+            }
+
+            .programa-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .main-container {
+                padding: 2rem 1rem;
+            }
+
+            .widget-header {
+                padding: 1.5rem;
+            }
+
+            .widget-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+
+            .widget-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+}
+
+<!-- Hero Section -->
+<section class="info-hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Recursos de Salud Integral</h1>
+        <p class="hero-subtitle">Accede a información verificada y servicios médicos disponibles</p>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="main-container">
+    <div class="section-title">
+        <h2>Servicios y Recursos Disponibles</h2>
+        <p>Información oficial avalada por instituciones de salud</p>
+    </div>
+
+    <div class="widgets-grid">
+        <!-- Widget 1: Clínicas Móviles -->
+        <article class="widget widget-clinicas">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-clinic-medical"></i>
+                </div>
+                <h3 class="widget-title">Clínicas Móviles</h3>
+                <p class="widget-subtitle">Servicios médicos en tu zona</p>
+            </div>
+            <div class="widget-content">
+                <div class="clinica-list">
+                    <div class="clinica-item">
+                        <div class="clinica-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="clinica-info">
+                            <h4>Zona Norte</h4>
+                            <p>Parque Central · 08:00-18:00</p>
+                        </div>
+                        <span class="estado-badge estado-abierto">Abierto</span>
+                    </div>
+
+                    <div class="clinica-item">
+                        <div class="clinica-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="clinica-info">
+                            <h4>Zona Sur</h4>
+                            <p>Centro Comercial · 09:00-20:00</p>
+                        </div>
+                        <span class="estado-badge estado-abierto">Abierto</span>
+                    </div>
+
+                    <div class="clinica-item">
+                        <div class="clinica-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="clinica-info">
+                            <h4>Zona Este</h4>
+                            <p>Universidad · 08:00-16:00</p>
+                        </div>
+                        <span class="estado-badge estado-cerrado">Cerrado</span>
+                    </div>
+                </div>
+                <a href="@Url.Action("Calendario", "Home")" class="btn-widget">
+                    <i class="fas fa-search-location"></i> Ver Todas las Ubicaciones
+                </a>
+            </div>
+        </article>
+
+        <!-- Widget 2: Alimentación -->
+        <article class="widget widget-alimentacion">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3 class="widget-title">Guías de Alimentación</h3>
+                <p class="widget-subtitle">Recomendaciones por grupo de edad</p>
+            </div>
+            <div class="widget-content">
+                <div class="grupo-alimentacion">
+                    <div class="grupo-item">
+                        <div class="grupo-header">
+                            <span class="edad-badge">0-3 años</span>
+                            <h4>Primera Infancia</h4>
+                        </div>
+                        <ul class="recomendaciones-list">
+                            <li><i class="fas fa-check"></i> Lactancia materna exclusiva</li>
+                            <li><i class="fas fa-check"></i> Alimentos ricos en hierro</li>
+                            <li><i class="fas fa-check"></i> Introducción gradual</li>
+                        </ul>
+                    </div>
+
+                    <div class="grupo-item">
+                        <div class="grupo-header">
+                            <span class="edad-badge">4-12 años</span>
+                            <h4>Etapa Escolar</h4>
+                        </div>
+                        <ul class="recomendaciones-list">
+                            <li><i class="fas fa-check"></i> 5 porciones frutas/verduras</li>
+                            <li><i class="fas fa-check"></i> Límite de azúcares</li>
+                            <li><i class="fas fa-check"></i> Actividad física diaria</li>
+                        </ul>
+                    </div>
+                </div>
+                <a href="@Url.Action("Alimentacion", "Home")" class="btn-widget">
+                    <i class="fas fa-book-medical"></i> Ver Guías Completas
+                </a>
+            </div>
+        </article>
+
+        <!-- Widget 3: Vacunación -->
+        <article class="widget widget-vacunacion">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-syringe"></i>
+                </div>
+                <h3 class="widget-title">Jornadas de Vacunación</h3>
+                <p class="widget-subtitle">Calendario oficial 2025</p>
+            </div>
+            <div class="widget-content">
+                <div class="jornada-list">
+                    <div class="jornada-item">
+                        <div class="jornada-header">
+                            <h4>Vacunación Infantil</h4>
+                            <span class="jornada-fecha">Mar 15-30</span>
+                        </div>
+                        <p>Esquema completo 0-5 años</p>
+                        <div class="vacuna-tags">
+                            <span class="vacuna-tag">Pentavalente</span>
+                            <span class="vacuna-tag">Polio</span>
+                            <span class="vacuna-tag">SRP</span>
+                        </div>
+                    </div>
+
+                    <div class="jornada-item">
+                        <div class="jornada-header">
+                            <h4>Adultos Mayores</h4>
+                            <span class="jornada-fecha">Abr 1-15</span>
+                        </div>
+                        <p>Grupos de riesgo</p>
+                        <div class="vacuna-tags">
+                            <span class="vacuna-tag">Influenza</span>
+                            <span class="vacuna-tag">Neumococo</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("Vacunacion", "Home")" class="btn-widget">
+                    <i class="fas fa-calendar-alt"></i> Ver Calendario Completo
+                </a>
+            </div>
+        </article>
+
+        <!-- Widget 4: Programas MINSA -->
+        <article class="widget widget-minsa">
+            <div class="widget-header">
+                <div class="widget-icon">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <h3 class="widget-title">Programas MINSA</h3>
+                <p class="widget-subtitle">Iniciativas del Ministerio de Salud</p>
+            </div>
+            <div class="widget-content">
+                <div class="programa-list">
+                    <div class="programa-item">
+                        <div class="programa-header">
+                            <div class="programa-logo">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div>
+                                <h4>Salud Cardiovascular</h4>
+                                <p>Prevención y control</p>
+                            </div>
+                        </div>
+                        <div class="programa-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">15K</span>
+                                <span class="stat-label">Pacientes</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">94%</span>
+                                <span class="stat-label">Satisfacción</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">62</span>
+                                <span class="stat-label">Centros</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("Programas", "Home")" class="btn-widget">
+                    <i class="fas fa-clipboard-list"></i> Ver Todos los Programas
+                </a>
+            </div>
+        </article>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        // Sistema de estados en tiempo real
+        document.addEventListener('DOMContentLoaded', function () {
+            function actualizarEstadosClinicas() {
+                const horarios = [
+                    { inicio: 8, fin: 18 },   // Zona Norte
+                    { inicio: 9, fin: 20 },   // Zona Sur
+                    { inicio: 8, fin: 16 }    // Zona Este
+                ];
+
+                const ahora = new Date();
+                const horaActual = ahora.getHours();
+                const estados = document.querySelectorAll('.estado-badge');
+
+                estados.forEach((estado, index) => {
+                    const horario = horarios[index];
+                    const estaAbierto = horaActual >= horario.inicio && horaActual < horario.fin;
+
+                    estado.textContent = estaAbierto ? 'Abierto' : 'Cerrado';
+                    estado.className = `estado-badge ${estaAbierto ? 'estado-abierto' : 'estado-cerrado'}`;
+                });
+            }
+
+            actualizarEstadosClinicas();
+            setInterval(actualizarEstadosClinicas, 60000);
+
+            // Efectos hover para widgets
+            const widgets = document.querySelectorAll('.widget');
+            widgets.forEach(widget => {
+                widget.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-5px)';
+                });
+
+                widget.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+}
